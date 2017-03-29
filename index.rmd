@@ -1,0 +1,133 @@
+---
+title: "Отчёт"
+author: "Екатерина Колестро"
+date: '29 марта 2017 г '
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Studio
+
+Отчет о проделанной работе студента РГАУ-МСХА.
+
+#### 1. Вычислить среднее для каждой колонки таблицы iris, за исключением колонки “Species” и соберите результат в список (list).
+
+```{r iris}
+head(iris)
+```
+
+```{r}
+mean (iris$Sepal.Length)
+mean (iris$Sepal.Width)
+mean (iris$Petal.Length)
+mean (iris$Petal.Width)
+list(mean (iris$Sepal.Length), mean (iris$Sepal.Width), mean (iris$Petal.Length), mean (iris$Petal.Width))
+```
+
+#### 2. Вычислить среднее для каждой строки, исключив перед этим колонку “Species”, и сохранить результат в векторе.
+
+```{r i, echo=FALSE}
+ir = iris[c(1:4)] 
+y = vector()
+for(i in 1:length(iris$Sepal.Length)){
+  y[i] = mean(t(ir[i,])) 
+}
+y
+```
+
+#### 3. Создайте случайные 1000 нуклеотидов, сохранив их в вектор DNA, посчитайте количество нуклеотидов A и T, их долю от общей длинны ДНК и запишите результат в вектор ‘dna_at’
+
+```{r DNA}
+dna = factor(rep(c("T","G","C","A"))) 
+sample(dna,size = 1000, replace = TRUE)
+DNA = sample(dna,size = 1000, replace = TRUE)
+ratio = summary(factor(DNA))
+ratio
+dna_at = dna[-c(2, 3)] 
+ratio = summary(factor(dna_at))/length(DNA)
+ratio
+```
+
+#### 4. Создайте векто в котором записан произвольный набор латинских букв длинной не менее 10000 символов и посчитайте количество гласных.
+```{r ABC}
+letters
+sample(letters,size = 1000, replace = TRUE)
+sampleabc = c(sample(letters, size = 1000, replace = TRUE))
+summary(sampleabc)
+glas = sampleabc[sampleabc %in% c("a","e","i","o","u")] 
+length(glas)
+```
+
+#### 5. Отсортируйте все виды в таблице iris по средней длинне лепестков. Результат должен быть фактором с градациями в виде имен видов с правильной последовательностью уровней.
+```{r ААА}
+x = factor(iris[order(iris$Petal.Length),]$Species)
+x
+```
+
+#### 6. Напишите функцию для рассчета медианы вектора самостоятельно.
+
+```{r mediana}
+median = function(x) {
+  z=sort(x)
+  if((length(z)%%2)!=0){
+    result = z[(length(x)/2)+1]
+  }
+  else
+    result = (z[length(x)/2]+z[length(x)/2+1])/2
+  return(result)
+}
+```
+
+#### 7. Постройте график зависимости длины чашелистиков от длинны лепестков для каждого вида из таблицы iris
+
+```{r ggplot, echo=FALSE}
+library(ggplot2)
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length)) + geom_jitter(alpha = 0.6) + facet_grid(. ~ Species)
+```
+
+#### 8. По данным таблицы ‘diamonds’(пакет ggplot2 ) почитайте среднюю стоимость цены карата для бриллиантов дороже 1000$ для каждой категории яркости (clarity).
+
+```{r diamonds, echo=FALSE}
+diamonds
+levels(factor(diamonds$clarity))
+x = levels(factor(diamonds$clarity))
+y = vector()
+for (i in 1:length(x)) {
+  y[i]=mean(diamonds$price[(diamonds$price>1000) & diamonds$clarity==x[i]])
+}
+y
+```
+
+##**Регрессионный и корелляционный анализы**
+
+#### 1. Написать собственную функцию, которая для двух векторов одинакового объема считала бы коэффициент корелляции Спирмена.
+
+```{r sp}
+spirman = function(x, y) {
+  if(length(x)==length(y) && is.vector(x)==TRUE && is.vector(y)==TRUE){
+    p=1
+    n=length(x)
+    rx=rank(x)
+    ry=rank(y)
+    for(i in 1:n)
+    {
+      p = p - ((( rx[i] - ry[i] )^2)*6)/(n*(n^2-1))
+    }
+  }
+  else{
+    if(is.vector(x)==TRUE && is.vector(y)==TRUE)
+      print()
+    else
+      print()
+    p=-1
+  }
+  return(p)
+}
+spirman(iris$Sepal.Length,iris$Petal.Length)
+```
+#### 2. Постройте оптимальную линейную модель множественной регрессии для co2_flux, используя только данные летних месяцев.
+*А тут у меня не получается добавить на страницу. Пишет ошибку. Он не может найти файл cvs. Но задача решена.*
